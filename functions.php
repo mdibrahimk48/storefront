@@ -70,3 +70,60 @@ if ( version_compare( get_bloginfo( 'version' ), '4.7.3', '>=' ) && ( is_admin()
  * Note: Do not add any custom code here. Please use a custom plugin so that your customizations aren't lost during updates.
  * https://github.com/woocommerce/theme-customisations
  */
+
+
+// remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart');
+// remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart');
+
+// add_filter('woocommerce_is_purchasable', 'woocommerce_cloudways_purchasable');
+// function woocommerce_cloudways_purchasable($cloudways_purchasable, $product) {
+// return ($product->id == your_specific_product_id (like 15) ? false : $cloudways_purchasable);
+// }
+
+
+// add_filter( 'wpto_add_to_cart_view' , function(){
+// 	return false;
+// });
+
+
+//Remove Cart for Specific Products from Table
+add_filter( 'woocommerce_loop_add_to_cart_link', 'remove_add_to_cart_specific_products', 25, 2 );
+			  
+function remove_add_to_cart_specific_products( $add_to_cart_html, $product ) {
+	
+	if( 15 === $product->get_id() || 17 === $product->get_id() || $product->is_type( 'variable' ) ) {
+		return '';
+	}
+	return $add_to_cart_html;
+	
+}
+
+
+//Remove Cart for Specific Products from Single Page
+add_action( 'wp', 'rudr_remove_add_to_cart_single_product' );
+
+function rudr_remove_add_to_cart_single_product(){
+	if( is_single(15) || is_single(17) ) { // "10" is a product ID as you remember
+		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+	}
+}
+
+/////////////////////
+if( !function_exists( 'new_shortcode_column' ) ){
+	function new_shortcode_column( $column_array ) {
+		$column_array['new_shortcode'] = 'New Shortcode';
+		return $column_array;
+	}
+ }
+ add_filter( 'wpto_default_column_arr', 'new_shortcode_column' );
+
+
+
+ if( !function_exists( 'temp_file_for_new_shortcode' ) ){
+    function temp_file_for_new_shortcode( $file ){
+        $file = __DIR__ . '/../file/my_shortcode.php';
+        // $file = $your_file_location;
+        return $file;
+    }
+}
+add_filter( 'wpto_template_loc_item_{new_shortcode}', 'temp_file_for_new_shortcode', 10 );
