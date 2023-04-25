@@ -46,6 +46,7 @@
 		 * @hooked storefront_primary_navigation_wrapper_close - 68
 		 */
 		do_action( 'storefront_header' );
+
 		?>
 
 	</header><!-- #masthead -->
@@ -65,3 +66,5 @@
 
 		<?php
 		do_action( 'storefront_content_top' );
+
+		spwptm_testimonial_loop();
